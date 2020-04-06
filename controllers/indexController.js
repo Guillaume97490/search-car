@@ -3,7 +3,7 @@
  *
  * @class indexController
  */
-class indexController {
+ indexController = {}
   /**
    * Show the home page
    * @param {object} req Express request object
@@ -11,9 +11,9 @@ class indexController {
    *
    * @memberof indexController
    */
-  home = async (req, res) => {
+    indexController.home = async (req, res) => {
     res.render("index", { title: "Express" });
   };
-}
 
-module.exports = new indexController();
+
+module.exports = indexController;
