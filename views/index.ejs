@@ -1,61 +1,84 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" href="/stylesheets/jquery.flexdatalist.min.css"/>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
 
-    <input type="text"
+<head>
+  <title><%= title %></title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" href="/stylesheets/jquery.flexdatalist.min.css" />
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
 
-       placeholder="Front-End Dev Skills"
+<body>
+  <h1><%= title %></h1>
+  <p>Welcome to <%= title %></p>
 
-       class="flexdatalist"
+  <input id="cars" type="text" placeholder="Front-End Dev Skills" class="flexdatalist" data-min-length="1" list="skills"
+    name="skill" multiple="multiple">
 
-       data-min-length="1"
-
-       list="skills"
-
-       name="skill"
-       
-       multiple="multiple"
-       >
-
-<datalist id="skills">
-
-  <option value="Node.js">Node.js</option>
-
-  <option value="Accessibility">Accessibility</option>
-
-  <option value="Wireframing">Wireframing</option>
-
-  <option value="HTML5">HTML5</option>
-
-  <option value="CSS3">CSS3</option>
-
-  <option value="DOM Manipulation">DOM Manipulation</option>
-
-  <option value="MVC">MVC</option>
-
-  <option value="MVVM">MVVM</option>
-
-  <option value="JavaScript">JavaScript</option>
-
-  <option value="jQuery">jQuery</option>
-
-  <option value="ReactJS">ReactJS</option>
-
-</datalist>
+  <datalist id="skills">
+    <% for (const i in brands) {%>
+       <option value="<%= brands[i].make_display %>"><%=  brands[i].make_display %> </option>
+    <% } %>
+  </datalist>
 
 
-    
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="/javascript/jquery.flexdatalist.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-  </body>
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="/javascript/jquery.flexdatalist.min.js"></script>
+
+
+
+  <script>
+     $('#cars').on('change', function () { 
+
+      console.log('n\'importequoi toto');
+
+          let brand = $(this).val();/* find(":checked") */
+          $.get(`/getBrands/${brand}`, (models) => {
+
+            /*  console.log(models); */
+
+            let options = "<option id='default' selected disabled value=>Selectionez la marque :</option>";
+            let modeles = models.models;
+
+
+            for (const i in modeles.Models) {
+              options +=
+                `<option data-brand='${brandIndex}' value='${modeles.Models[i].model_name}'>${modeles.Models[i].model_name}</option>`;
+
+
+            }
+          });
+         }); 
+  </script>
+
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+  </script>
+</body>
+
 </html>
