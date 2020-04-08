@@ -39,6 +39,44 @@ const https = require('https');
 
 
 
+  
+  /**
+   * 
+   * get CarQuery api datas for car models
+   * 
+   * @param {object} req Express request object
+   * @param {object} res Express response object
+   * @memberof indexController
+   */
+  indexController.getModels = async (req, res) => {
+ 
+    let idbrand = req.params.idbrand.toLowerCase();
+   console.log(idbrand);
+       https.get(`https://www.carqueryapi.com/api/0.3/?cmd=getModels&make=${idbrand}`, function(result) {
+         
+        
+       
+       let data = '';
+         
+         result.on('data', function(chunk) {
+           data += chunk;
+         })
+     
+         result.on('end', () => {
+           let makes = JSON.parse(data)
+   
+          
+           res.json({ models : makes });
+     
+         })
+   
+       }).on("error", (err) => {
+         console.log("Error: " + err)
+       })
+       }
+   
+   
+   
 
 
 
