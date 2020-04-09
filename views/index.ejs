@@ -65,6 +65,9 @@
 
 
       let brand = $(this).val(); /* find(":checked") */
+
+      if ($(".fdl-remove").length < 1) return;
+      
       $.get(`/${brand}/models`, (models) => {
 
         console.log(models);
