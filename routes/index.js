@@ -5,6 +5,7 @@ const router = express.Router();
 
 /* GET home page. */
 router.get('/', controller.home);
-router.get('/:idbrand/models', controller.getModels); 
+router.get('/:brand/models', controller.getModels); 
+router.get('/:brand/:model/trims', controller.getTrims); 
 
 module.exports = router;
