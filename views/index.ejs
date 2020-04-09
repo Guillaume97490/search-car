@@ -24,7 +24,7 @@
 
 
 
-  <div class="card d-none bg-light col-12 mx-auto mt-5">
+  <div id="card" class="card d-none bg-light col-12 mx-auto mt-5">
     <div class="card-header">
         <h4 class="card-title"><span id="car-marque-nom"></span></h4>
     </div>
@@ -114,7 +114,9 @@
                     }
                        
                     $('.fdl-remove').on('click', function () {
+                      $("#card").addClass("d-none");
                           replaceDatalist();
+
 
                     });
 
