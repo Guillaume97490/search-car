@@ -103,7 +103,7 @@ const https = require('https');
   
       result.on('end', () => {
         let infos = JSON.parse(data)
-        console.log(infos.Trims[0]);
+       /*  console.log(infos.Trims[0]); */
         res.send({ infos });
   
       })

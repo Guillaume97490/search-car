@@ -81,7 +81,7 @@
   <script>
     const brands = <%- JSON.stringify(brands) %> ;
     function replaceDatalist(){
-      console.log('tutu');
+     /*  console.log('tutu'); */
       let options= '';
 
     for (const i in brands) {
@@ -93,7 +93,7 @@
 
 
     $('#cars').on('change', function () {
-      console.log(typeof $(this).val());
+ /*      console.log(typeof $(this).val()); */
 
 
       let brand = $(this).val(); /* find(":checked") */
@@ -102,7 +102,7 @@
               
               $.get(`/${brand}/models`, (models) => {
 
-                    console.log(models);
+                  /*   console.log(models); */
 
                     let options = "";
                     let modeles = models.models;
@@ -132,7 +132,15 @@
     });
 
 
-
+function addSearch(brand,model){
+  data = {
+    brand:brand,
+    model:model
+  };
+  console.log(data);
+  $.post('/searchs', data, result => {
+  })
+}
 
  function getTrims() {
         
@@ -140,12 +148,17 @@
 
         let brand = $('ul.flexdatalist-multiple li.value span.text')[0].innerHTML.trim();
         let model = $('ul.flexdatalist-multiple li.value span.text')[1].innerHTML.trim();
-        
-        /* console.log(modelIndex); */
+      
+       addSearch(brand,model);
+       $.get(`/searchs`, (searchs) => {
+       console.log(searchs);
+       })
+       
+       /* console.log(modelIndex); */
         $.get(`/${brand}/${model}/trims`, (infos) => {
         let info=infos.infos.Trims[0];
 
-        console.log(info);
+       /*  console.log(info); */
 
      if (info.model_make_id !=null && info.model_name !=null){
           $("#car-marque-nom").text(`${info.model_make_id} ${info.model_name}`);
