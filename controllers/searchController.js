@@ -12,12 +12,12 @@ searchController = {}
  */
 searchController.add = async (req, res) => {
 console.log(req.body);
-    await Search.create({
+   const search = await Search.create({
       brand: req.body.brand,
       model: req.body.model
     });
 
-
+    res.send(search);
 }
 
 module.exports = searchController;
@@ -33,13 +33,13 @@ module.exports = searchController;
  * @memberof searchController
  */
 searchController.list = async (req, res) => {
-    console.log(req.body);
+    /* console.log(req.body); */
        const searchs = await Search.findAll({
             limit:5,
             order:[['created_at','desc']]
         });
-    console.log(searchs);
-    
+    /* console.log(searchs); */
+    res.send(searchs);
     }
     
     module.exports = searchController;

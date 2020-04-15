@@ -22,9 +22,20 @@
     <% } %>
   </datalist>
 
+  <div id="card-models" class="card  bg-light col-12 mx-auto mt-5">
+    <div class="card-header">
+        <h4 class="card-title">Historique des recherches</h4>
+    </div>
+    <ul class="card-body" id="history">
+        
+      
 
 
-  <div id="card" class="card d-none bg-light col-12 mx-auto mt-5">
+    </ul>
+    
+</div>
+
+  <div id="card-infos" class="card d-none bg-light col-12 mx-auto mt-5">
     <div class="card-header">
         <h4 class="card-title"><span id="car-marque-nom"></span></h4>
     </div>
@@ -58,8 +69,7 @@
     
 </div>
 
-
-
+<canvas id="myChart"></canvas>
 
 
 
@@ -79,6 +89,9 @@
 
 
   <script>
+
+    getHistory()
+
     const brands = <%- JSON.stringify(brands) %> ;
     function replaceDatalist(){
      /*  console.log('tutu'); */
@@ -114,7 +127,7 @@
                     }
                        
                     $('.fdl-remove').on('click', function () {
-                      $("#card").addClass("d-none");
+                      $("#card-infos").addClass("d-none");
                           replaceDatalist();
 
 
@@ -139,6 +152,8 @@ function addSearch(brand,model){
   };
   console.log(data);
   $.post('/searchs', data, result => {
+     getHistory(); 
+    
   })
 }
 
@@ -150,9 +165,7 @@ function addSearch(brand,model){
         let model = $('ul.flexdatalist-multiple li.value span.text')[1].innerHTML.trim();
       
        addSearch(brand,model);
-       $.get(`/searchs`, (searchs) => {
-       console.log(searchs);
-       })
+      
        
        /* console.log(modelIndex); */
         $.get(`/${brand}/${model}/trims`, (infos) => {
@@ -228,16 +241,53 @@ function addSearch(brand,model){
 
         });
         $('#default').remove();
-        $('.card').removeClass("d-none");
+        $('#card-infos').removeClass("d-none");
+       
       }; 
 
+function getHistory(){
+  console.log('de tenessee');
+  $.get(`/searchs`, (searchs) => {
+        console.log(searchs); 
 
+
+       let historySearch = "";
+                   
+
+
+                    for (const i in searchs) {
+                      historySearch +=
+                            `<li>${searchs[i].brand} ${searchs[i].model}</li>`;
+                    }
+$('#history').html(historySearch);
+console.log('une chaine de caractere');
+       })
+}
    
   </script>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+<script>
+  var ctx = document.getElementById("myChart").getContext("2d");
+ var myChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [{
+            label: 'My First dataset',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: [0, 10, 5, 2, 20, 30, 45]
+        }]
+    },
+    options: {}
+});
+</script>
 
 
 
+  
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
     integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
   </script>
