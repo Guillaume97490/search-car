@@ -25,7 +25,7 @@ const https = require('https');
           let makes = JSON.parse(data).Makes
   
           
-          res.render('index', { title: 'index', brands: makes });
+          res.render('index', { title: 'Search car', brands: makes });
     
         })
   

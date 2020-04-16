@@ -6,3 +6,8 @@ body {
 a {
   color: #00B7FF;
 }
+
+ ul.flexdatalist-multiple{
+  box-shadow: inset 0px 0px 2.75px;
+  border:0px !important;
+}
