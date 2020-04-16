@@ -69,7 +69,8 @@
     
 </div>
 
-<canvas id="myChart"></canvas>
+<div id="chart-container">
+</div>
 
 
 
@@ -150,9 +151,10 @@ function addSearch(brand,model){
     brand:brand,
     model:model
   };
-  console.log(data);
+  // console.log(data);
   $.post('/searchs', data, result => {
-     getHistory(); 
+    getHistory(); 
+    getChart("model", 4);
     
   })
 }
@@ -246,9 +248,9 @@ function addSearch(brand,model){
       }; 
 
 function getHistory(){
-  console.log('de tenessee');
+  // console.log('de tenessee');
   $.get(`/searchs`, (searchs) => {
-        console.log(searchs); 
+        // console.log(searchs); 
 
 
        let historySearch = "";
@@ -260,7 +262,7 @@ function getHistory(){
                             `<li>${searchs[i].brand} ${searchs[i].model}</li>`;
                     }
 $('#history').html(historySearch);
-console.log('une chaine de caractere');
+// console.log('une chaine de caractere');
        })
 }
    
@@ -269,20 +271,78 @@ console.log('une chaine de caractere');
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
 <script>
-  var ctx = document.getElementById("myChart").getContext("2d");
- var myChart = new Chart(ctx, {
-    type: 'pie',
-    data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+
+  // var ctx = document.getElementById("myChart").getContext("2d");
+  // var myChart = new Chart(ctx, {
+  //   type: 'pie',
+  //   data: {
+  //       labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+  //       datasets: [{
+  //           label: 'My First dataset',
+  //           backgroundColor: 'rgb(255, 99, 132)',
+  //           borderColor: 'rgb(255, 99, 132)',
+  //           data: [0, 10, 5, 2, 20, 30, 45]
+  //       }]
+  //   },
+  //   options: {}
+  // });
+
+  getChart("model", 4);
+  
+  function getChart(type, limit){
+    $.get(`/searchs/chart-datas?type=${type}&limit=${limit}`, (res) => {
+      console.log(res);
+      
+      let labels = [];
+      let numbers = [];
+      for (const key in res.datas) {
+        if (res.datas.hasOwnProperty(key)) {
+          const element = res.datas[key];
+          labels.push(element[type]);
+          numbers.push(element[`${type}_count`]);
+        }
+      }
+      renderChart(labels, numbers, res.title)
+      
+    });
+  }
+
+  function destroy(obj) {
+    for(var prop in obj){
+        var property = obj[prop];
+        if(property != null && typeof(property) == 'object') {
+            destroy(property);
+        }
+        else {
+            obj[prop] = null;
+        }
+    }
+}
+  
+  // renderChart();
+  function renderChart(labels, numbers, title){
+  $('#chart-container').html('<canvas id="myChart"></canvas>');
+   let myChart = new Chart(document.getElementById("myChart"), {
+      type: 'pie',
+      data: {
+        labels: labels,
         datasets: [{
-            label: 'My First dataset',
-            backgroundColor: 'rgb(255, 99, 132)',
-            borderColor: 'rgb(255, 99, 132)',
-            data: [0, 10, 5, 2, 20, 30, 45]
+          label: "Recherche",
+          backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+          data: numbers
         }]
-    },
-    options: {}
-});
+      },
+      options: {
+        title: {
+          display: true,
+          text: title
+        }
+      }
+    });
+  }
+
+
+
 </script>
 
 
