@@ -12,7 +12,7 @@
 
 <body class="p-0 p-lg-5">
   <h1 class="text-center"><%= title %></h1>
-  <p class="text-center">Welcome to <%= title %></p>
+  <p class="text-center pb-4">Bienvenue sur notre plateforme de recherche de voitures</p>
 
   <input id="cars" type="text" placeholder="Marques" class="flexdatalist" data-min-length="1"
     list="search-car" name="search_car" multiple="multiple">
@@ -22,322 +22,64 @@
     <option value="<%= brands[i].make_display %>"><%=  brands[i].make_display %> </option>
     <% } %>
   </datalist>
+
+  <div id="spinner" class="d-none row justify-content-center mt-5">
+    <div class="spinner-border" style="width: 4rem; height: 4rem;" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+    <div id="card-infos" class="p-0 card d-none bg-light col-12 mx-auto mt-5">
+      <div class="card-header">
+        <h4 class="card-title"><span id="car-marque-nom"></span></h4>
+      </div>
+      <div class="card-body">
+        <p id="car-marque" class="card-text"></p>
+        <p id="car-nom" class="card-text"></p>
+        <p id="car-motorisation" class="card-text"></p>
+        <p id="car-type" class="card-text"></p>
+        <p id="car-pays-origine" class="card-text"></p>
+        <p id="car-portes" class="card-text"></p>
+        <p id="car-sieges" class="card-text"></p>
+        <p id="car-bdv" class="card-text"></p>
+        <p id="car-fuel" class="card-text"></p>
+        <p id="car-year" class="card-text"></p>
+      </div>
+    </div>
+
   
   <div id="card-data" class=" px-3 px-lg-5 py-0 py-lg-5 card bg-light col-12 mx-auto mt-5">
-  <div class="row">
-    <div id="card-history" class="p-0 card col-12 col-lg-6 bg-light mx-auto">
-    <div class="card-header">
-        <h4 class="card-title">Historique des recherches</h4>
-    </div>
-    <ul class="card-body pl-4" id="history">
-    </ul>
-  </div>
-    <div class="col-12 col-lg-6 p-0 pb-2" id="chart-container">
-    </div>
+    <div class="row">
+      <div id="card-history" class="p-0 card col-12 col-lg-6 bg-light mx-auto">
+        <div class="card-header">
+            <h4 class="card-title text-center">Historique des recherches</h4>
+        </div>
+        <ul class="card-body pl-4 text-center mb-0" id="history">
+        </ul>
+      </div>
+      <div class="col-12 col-lg-6 p-0 pb-2" id="chart-container">
+      </div>
+    </div> 
   </div> 
-</div> 
 
-<div id="spinner" class="d-none row justify-content-center mt-5">
-  <div class="spinner-border" style="width: 4rem; height: 4rem;" role="status">
-    <span class="sr-only">Loading...</span>
-  </div>
-</div>
-  <div id="card-infos" class="p-0 card d-none bg-light col-12 mx-auto mt-5">
-    <div class="card-header">
-      <h4 class="card-title"><span id="car-marque-nom"></span></h4>
-    </div>
-    <div class="card-body">
-      <p id="car-marque" class="card-text"></p>
-      <p id="car-nom" class="card-text"></p>
-      <p id="car-motorisation" class="card-text"></p>
-      <p id="car-type" class="card-text"></p>
-      <p id="car-pays-origine" class="card-text"></p>
-      <p id="car-portes" class="card-text"></p>
-      <p id="car-sieges" class="card-text"></p>
-      <p id="car-bdv" class="card-text"></p>
-      <p id="car-fuel" class="card-text"></p>
-      <p id="car-year" class="card-text"></p>
-    </div>
-  </div>
+
 
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="/javascript/jquery.flexdatalist.min.js"></script>
-
-
-
   <script>
-
-    getHistory()
-
     const brands = <%- JSON.stringify(brands) %> ;
-    function replaceDatalist(){
-     /*  console.log('tutu'); */
-      let options= '';
-
-    for (const i in brands) {
-      options +=
-            `<option  value='${brands[i].make_display}'>${brands[i].make_display}</option>`;
-    }
-    $('#search-car').html(options);
-  }
-
-
-    $('#cars').on('change', function () {
- /*      console.log(typeof $(this).val()); */
-
-
-      let brand = $(this).val(); /* find(":checked") */
-      if ($(".fdl-remove").length < 1){
-        $("#cars-flexdatalist").attr('placeholder','Marques');
-      }
-              if ($(".fdl-remove").length < 1) return;
-              $("#cars-flexdatalist").attr('placeholder','');
-              $.get(`/${brand}/models`, (models) => {
-
-                  /*   console.log(models); */
-
-                    let options = "";
-                    let modeles = models.models;
-
-
-                    for (const i in modeles.Models) {
-                          options +=
-                            `<option data-brand='${brand}' value='${modeles.Models[i].model_name}'>${modeles.Models[i].model_name}</option>`;
-                    }
-                       
-                    $('.fdl-remove').on('click', function () {
-                      $("#card-infos").addClass("d-none");
-                          replaceDatalist();
-
-
-                    });
-
-                    $('#search-car').html(options);
-                    $("#cars-flexdatalist").attr('placeholder','Modèles');
-
-              });
-
-              if($('ul.flexdatalist-multiple li.value').length==2){
-                getTrims();
-              }
-
-            /*   if($('ul.flexdatalist-multiple li').length==3){
-                $('ul.flexdatalist-multiple li').last().html('');
-              } */
-
-    });
-
-
-function addSearch(brand,model){
-  data = {
-    brand:brand,
-    model:model
-  };
-  // console.log(data);
-  $.post('/searchs', data, result => {
-    getHistory(); 
-    getChart("model", 4);
-    
-  })
-}
-
- function getTrims() {
-  
-
-
-        let brand = $('ul.flexdatalist-multiple li.value span.text')[0].innerHTML.trim();
-        let model = $('ul.flexdatalist-multiple li.value span.text')[1].innerHTML.trim();
-        
-
-       addSearch(brand,model);
-        $('#spinner').removeClass("d-none");
-
-        $.get(`/${brand}/${model}/trims`, (infos) => {
-
-        let info=infos.infos.Trims[0];
-
-     if (info.model_make_id !=null && info.model_name !=null){
-          $("#car-marque-nom").text(`${info.model_make_id} ${info.model_name}`);
-        }else{
-          $("#car-marque-nom").addClass("d-none");
-        }
-
-        if (info.model_make_id!=null){
-          $("#car-marque").text(`Marque : ${info.model_make_id}`);
-        }else{
-          $("#car-marque").addClass("d-none");
-        }
-
-        if (info.model_name!=null){
-          $("#car-nom").text(`Nom : ${info.model_name}`);
-        }else{
-          $("#car-nom").addClass("d-none");
-        }
-
-        if (info.model_trim.length>0){
-          $("#car-motorisation").text(`Motorisation : ${info.model_trim}`);
-        }else{
-          $("#car-motorisation").addClass("d-none");
-        }
-
-        if (info.model_body!=null){
-          $("#car-type").text(`Type : ${info.model_body}`);
-        }else{
-          $("#car-type").addClass("d-none");
-        }
-
-        if (info.model_make_country!=null){
-          $("#car-pays-origine").text(`Pays d'origine : ${info.model_make_country}`);
-        }else{
-          $("#car-pays-origine").addClass("d-none");
-        }
-
-        if (info.model_engine_fuel!=null){
-          $("#car-fuel").text(`Carburant : ${info.model_engine_fuel}`);
-        }else{
-          $("#car-fuel").addClass("d-none");
-        }
-
-        if (info.model_doors!=null){
-          $("#car-portes").text(`Nombre de portes : ${info.model_doors}`);
-        }else{
-          $("#car-portes").addClass("d-none");
-        }
-
-        if (info.model_seats!=null){
-          $("#car-sieges").text(`Nombre de sièges : ${info.model_seats}`);
-        }else{
-          $("#car-sieges").addClass("d-none");
-        }
-
-        if (info.model_transmission_type!=null){
-          $("#car-bdv").text(`Boite de vitesse : ${info.model_transmission_type}`);
-        }else{
-          $("#car-bdv").addClass("d-none");
-        }
-
-        if (info.model_year!=null){
-          $("#car-year").text(`Année de production : ${info.model_year}`);
-        }else{
-          $("#car-year").addClass("d-none");
-        }
-console.log('2');
-$('#card-infos').removeClass("d-none");
-$('#spinner').addClass("d-none");
-/* $('#default').remove(); */
-        });
-       
-        
-      }; 
-
-function getHistory(){
-  // console.log('de tenessee');
-  $.get(`/searchs`, (searchs) => {
-        // console.log(searchs); 
-
-
-       let historySearch = "";
-                   
-
-
-                    for (const i in searchs) {
-                      historySearch +=
-                            `<li>${searchs[i].brand} ${searchs[i].model}</li>`;
-                    }
-$('#history').html(historySearch);
-// console.log('une chaine de caractere');
-       })
-}
-   
   </script>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-
-<script>
-
-  // var ctx = document.getElementById("myChart").getContext("2d");
-  // var myChart = new Chart(ctx, {
-  //   type: 'pie',
-  //   data: {
-  //       labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-  //       datasets: [{
-  //           label: 'My First dataset',
-  //           backgroundColor: 'rgb(255, 99, 132)',
-  //           borderColor: 'rgb(255, 99, 132)',
-  //           data: [0, 10, 5, 2, 20, 30, 45]
-  //       }]
-  //   },
-  //   options: {}
-  // });
-
-  getChart("model", 4);
-  
-  function getChart(type, limit){
-    $.get(`/searchs/chart-datas?type=${type}&limit=${limit}`, (res) => {
-      console.log(res);
-      
-      let labels = [];
-      let numbers = [];
-      for (const key in res.datas) {
-        if (res.datas.hasOwnProperty(key)) {
-          const element = res.datas[key];
-          labels.push(element[type]);
-          numbers.push(element[`${type}_count`]);
-        }
-      }
-      renderChart(labels, numbers, res.title)
-      
-    });
-  }
-
-  function destroy(obj) {
-    for(var prop in obj){
-        var property = obj[prop];
-        if(property != null && typeof(property) == 'object') {
-            destroy(property);
-        }
-        else {
-            obj[prop] = null;
-        }
-    }
-}
-  
-  // renderChart();
-  function renderChart(labels, numbers, title){
-  $('#chart-container').html('<canvas id="myChart"></canvas>');
-   let myChart = new Chart(document.getElementById("myChart"), {
-      type: 'pie',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: "Recherche",
-          backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-          data: numbers
-        }]
-      },
-      options: {
-        title: {
-          display: true,
-          text: title
-        }
-      }
-    });
-  }
-
-
-
-</script>
-
-
-
-  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+  <script src="/javascript/chart.js"></script>
+  <script src="/javascript/history.js"></script>
+  <script src="/javascript/car-select.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
     integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
   </script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
     integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
   </script>
+
 </body>
 
 </html>

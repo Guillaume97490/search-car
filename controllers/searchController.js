@@ -68,15 +68,15 @@ searchController.getChartsData = async (req, res) => {
     });
 
     let title = ""
-    if (type == "brand") title = `Les ${limit} marques`;
-    if (type == "model") title = `Les ${limit} modeles`;
+    if (type == "brand") title = `Les ${limit} marques les plus recherchées`;
+    if (type == "model") title = `Les ${limit} modèles les plus recherchés`;
 
 
 
 
     result = {
         datas,
-        title: title + ' les plus recherchées'
+        title: title 
     }
     res.send(result);
 }

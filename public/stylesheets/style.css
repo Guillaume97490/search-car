@@ -11,3 +11,25 @@ a {
   box-shadow: inset 0px 0px 2.75px;
   border:0px !important;
 }
+
+input.flexdatalist-alias.cars-flexdatalist{
+  text-align:center;
+  background-color:rgba(189, 182, 175, 0.25);
+  min-width:80px;
+}
+
+ul#history{
+  list-style:none;
+}
+
+ul#history li{
+  margin-bottom:4%;
+}
+
+ul#history li:last-child{
+  margin-bottom:0;
+}
+
+ul#history li:first-child{
+  margin-top:1%;
+}
