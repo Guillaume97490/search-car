@@ -15,20 +15,19 @@
         }
       }
       renderChart(labels, numbers, res.title)
-      
     });
   }
 
-  function destroy(obj) {
-    for(var prop in obj){
-        var property = obj[prop];
-        if(property != null && typeof(property) == 'object') {
-            destroy(property);
-        }
-        else {
-            obj[prop] = null;
-        }
+function destroy(obj) {
+  for(var prop in obj){
+    var property = obj[prop];
+    if(property != null && typeof(property) == 'object') {
+        destroy(property);
     }
+    else {
+        obj[prop] = null;
+    }
+  }
 }
   
   // renderChart();
