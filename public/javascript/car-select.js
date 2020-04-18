@@ -1,9 +1,5 @@
 $( document ).ready(function() {
- $('ul.flexdatalist-multiple li').first().tooltip({
-     placement:'top',
-     title:'Rechercher une marque'
-});
- /* attr('data-toggle','tooltip').attr('data-placement','top').attr('title','Recherchez une marque'); */
+  enableTooltips();
 });
 
 function replaceDatalist(){
@@ -20,11 +16,12 @@ function replaceDatalist(){
 
    $('#cars').on('change', function () {
 /*      console.log(typeof $(this).val()); */
-
+enableTooltips();
 
      let brand = $(this).val(); /* find(":checked") */
      if ($(".fdl-remove").length < 1){
        $("#cars-flexdatalist").attr('placeholder','Marques');
+       
      }
              if ($(".fdl-remove").length < 1) return;
              $("#cars-flexdatalist").attr('placeholder','');
@@ -45,24 +42,49 @@ function replaceDatalist(){
                     $("#card-infos").addClass("d-none");
                     replaceDatalist();
                     $('ul.flexdatalist-multiple li').last().removeClass('d-none');
+                    
 
                    });
 
                    $('#search-car').html(options);
                    $("#cars-flexdatalist").attr('placeholder','Modèles');
+              enableTooltips();
 
              });
 
              if($('ul.flexdatalist-multiple li.value').length==2){
 
                getTrims();
+                
+
              }
 
              if($('ul.flexdatalist-multiple li').length==3){
                $('ul.flexdatalist-multiple li').last().addClass('d-none');
-             } 
+             }
+
+            
 
    });
+
+function enableTooltips() {
+  if(($('ul.flexdatalist-multiple li').length = 1)){
+    $('.tooltip').remove();
+  }
+  $('ul.flexdatalist-multiple li').first().tooltip('dispose');
+  $('ul.flexdatalist-multiple li').last().tooltip('dispose');
+  
+  $('ul.flexdatalist-multiple li').first().tooltip({
+    placement:'top',
+    title:'Rechercher une marque'
+  });
+  if ($('ul.flexdatalist-multiple li').length > 1) {
+    $('ul.flexdatalist-multiple li').last().tooltip({
+      placement:'top',
+      title:'Rechercher un modèle'
+    });
+  }
+}
 
 
 function addSearch(brand,model){
