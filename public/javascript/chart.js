@@ -72,15 +72,15 @@ function renderChart(labels, numbers, title){
   });
   const isBrand = title.includes("marques");
   $('#chart-container').append(`
-  <div class="row">
-    <div class="col-6">
+  <div class="row mx-0">
+    <div class="col-6 px-2">
       <label for="">Afficher les :</label>
       <select class="form-control" id="pie-type-select">
         <option ${isBrand ? 'selected' : ''} value="brand">Marques</option>
         <option ${!isBrand ? 'selected': '' } value="model">Modèles</option>
       </select>
     </div>
-    <div class="col-6">
+    <div class="col-6 px-2">
       <label for="">Selection du nombre :</label>
       <select class="form-control" id="pie-number-select">
         <option ${labels.length == 3 ? 'selected' : ''} value="3">3</option>
@@ -128,7 +128,7 @@ function renderSearchsPerDayChart(labels, numbers, title) {
       }
   });
   $('#chart-history-container').append(`
-  <div class="row">
+  <div class="row no-gutters">
     <div class="col-6 mx-auto">
     <label for="">Nombre de jours :</label>
       <select class="form-control" id="history-days-select">
