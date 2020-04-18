@@ -7,9 +7,9 @@ DATABASE.LOCAL = {
 }
 
 DATABASE.PROD = {
-    DBNAME: "",
-    USERNAME: "",
-    PASSWORD: ""
+    DBNAME: process.env.DB,
+    USERNAME: process.env.USER,
+    PASSWORD: process.env.PASSWORD
 }
 
 module.exports = DATABASE;
