@@ -69,7 +69,8 @@ indexController.getModels = async (req, res) => {
     });
     result.on('end', () => {
       let infos = JSON.parse(data);
-      res.send({ infos });
+      
+      res.send({ infos:infos.Trims[0] });
     });
   }).on("error", (err) => {
     console.log("Error: " + err);

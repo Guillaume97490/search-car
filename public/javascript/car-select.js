@@ -20,17 +20,19 @@ $('#cars').on('change', function () {
   if ($(".fdl-remove").length < 1) return;
   $("#cars-flexdatalist").attr('placeholder','');
 
+  // Récupère les modeles d'une marque de voiture
   $.get(`/${brand}/models`, (models) => {
     let options = "";
     let modeles = models.models;
     for (const i in modeles.Models) {
       options +=`<option data-brand='${brand}' value='${modeles.Models[i].model_name}'>${modeles.Models[i].model_name}</option>`;
     }
-             
+    
     $('.fdl-remove').on('click', function () {
       $("#card-infos").addClass("d-none");
       replaceDatalist();
       $('ul.flexdatalist-multiple li').last().removeClass('d-none');
+      $('ul.flexdatalist-multiple li.value').first().find('.fdl-remove').removeClass('d-none');
     });
 
     $('#search-car').html(options);
@@ -40,6 +42,7 @@ $('#cars').on('change', function () {
 
   if($('ul.flexdatalist-multiple li.value').length==2){
     getTrims();
+    $('ul.flexdatalist-multiple li.value').first().find('.fdl-remove').addClass('d-none');
   }
 
   if($('ul.flexdatalist-multiple li').length==3){
@@ -48,13 +51,60 @@ $('#cars').on('change', function () {
 
 });
 
+function translateInfos(info){
+  switch (info) {
+    case "engine_position": return "Position du moteur"
+    case "engine_cyl": return "Nombre de cylindres"
+    case "engine_valves_per_cyl": return "Valves par cylindres"
+    case "engine_power_rpm": return "Puissance moteur (trs/min)"
+    case "engine_torque_rpm": return "Couple moteur (trs/min)"
+    case "engine_stroke_mm": return "Course du moteur (mm)"
+    case "engine_fuel": return "Carburant"
+    case "0_to_100_kph": return "0 à 100 km/h (s)"
+    case "transmission_type": return "Transmission"
+    case "doors": return "Nombre de portes"
+    case "length_mm": return "Longeur (mm)"
+    case "height_mm": return "Hauteur (mm)"
+    case "top_speed_kph": return "Vittesse maxi (km/h)"
+    case "weight_kg": return "Poids (kg)"
+    case "width_mm": return "Largeur (mm)"
+    case "wheelbase_mm": return "Empattement (mm)"
+    case "fuel_cap_l": return "Réservoir (litre))"
+    case "co2": return "Co2"
+    case "seats": return "Sièges"
+    case "lkm_city": return "Consomation urbaine (litre/km)"
+    case "lkm_mixed": return "Consomation mixte (litre/km)"
+
+    default:
+      return null
+  }
+}
+
+function showCarInfos(infos){
+  $('#card-infos .card-body').html('');
+  for (info in infos) {
+    const infoFr = translateInfos(info.replace('model_',''));
+    if (infoFr && infos[info]){
+      $('#card-infos .card-body').append(`
+      <div class="">
+        <p class="card-text">${infoFr} : <span>${infos[info]}</span></p>
+      </div>
+      `);
+    }
+  }
+
+  
+}
+
 function enableTooltips() {
+  // Réinitialise les tooltips
   if(($('ul.flexdatalist-multiple li').length = 1)){
     $('.tooltip').remove();
   }
   $('ul.flexdatalist-multiple li').first().tooltip('dispose');
   $('ul.flexdatalist-multiple li').last().tooltip('dispose');
   
+  // Place les tooltips de la marque et du modèle
   $('ul.flexdatalist-multiple li').first().tooltip({
     placement:'top',
     title:'Rechercher une marque'
@@ -73,12 +123,15 @@ function addSearch(brand,model){
    brand:brand,
    model:model
  };
- // console.log(data);
- $.post('/searchs', data, result => {
-   getHistory(); 
-   getChart("model", 4);
-   
- })
+
+  $.post('/searchs', data, result => {
+    getHistory(); 
+    // getChart("model", 4);
+    // getChart("createdAt", 4);
+    getChart(typeForChart, nbForChart);
+    getChart("createdAt", nbForHistoryChart);
+
+  });
 }
 
 function getTrims() {
@@ -87,76 +140,18 @@ function getTrims() {
   addSearch(brand,model);
   $('#spinner').removeClass("d-none");
   $.get(`/${brand}/${model}/trims`, (infos) => {
-    let info=infos.infos.Trims[0];
+    let info=infos.infos;
+
+    showCarInfos(info);
 
     if (info.model_make_id !=null && info.model_name !=null){
-      $("#car-marque-nom").text(`${info.model_make_id} ${info.model_name}`);
+      $("#car-marque-nom").text(`${info.model_make_display} ${info.model_name}`);
     }else{
       $("#car-marque-nom").addClass("d-none");
-    }
-    if (info.model_make_id!=null){
-      $("#car-marque").text(`Marque : ${info.model_make_id}`);
-    }else{
-      $("#car-marque").addClass("d-none");
-    }
-
-    if (info.model_name!=null){
-      $("#car-nom").text(`Nom : ${info.model_name}`);
-    }else{
-      $("#car-nom").addClass("d-none");
-    }
-
-    if (info.model_trim.length>0){
-      $("#car-motorisation").text(`Motorisation : ${info.model_trim}`);
-    }else{
-      $("#car-motorisation").addClass("d-none");
-    }
-
-    if (info.model_body!=null){
-      $("#car-type").text(`Type : ${info.model_body}`);
-    }else{
-      $("#car-type").addClass("d-none");
-    }
-
-    if (info.model_make_country!=null){
-      $("#car-pays-origine").text(`Pays d'origine : ${info.model_make_country}`);
-    }else{
-      $("#car-pays-origine").addClass("d-none");
-    }
-
-    if (info.model_engine_fuel!=null){
-      $("#car-fuel").text(`Carburant : ${info.model_engine_fuel}`);
-    }else{
-      $("#car-fuel").addClass("d-none");
-    }
-
-    if (info.model_doors!=null){
-      $("#car-portes").text(`Nombre de portes : ${info.model_doors}`);
-    }else{
-      $("#car-portes").addClass("d-none");
-    }
-
-    if (info.model_seats!=null){
-      $("#car-sieges").text(`Nombre de sièges : ${info.model_seats}`);
-    }else{
-      $("#car-sieges").addClass("d-none");
-    }
-
-    if (info.model_transmission_type!=null){
-      $("#car-bdv").text(`Boite de vitesse : ${info.model_transmission_type}`);
-    }else{
-      $("#car-bdv").addClass("d-none");
-    }
-
-    if (info.model_year!=null){
-      $("#car-year").text(`Année de production : ${info.model_year}`);
-    }else{
-      $("#car-year").addClass("d-none");
     }
 
     $('#card-infos').removeClass("d-none");
     $('#spinner').addClass("d-none");
-    /* $('#default').remove(); */
   });
       
        
